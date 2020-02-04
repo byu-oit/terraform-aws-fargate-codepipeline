@@ -14,18 +14,16 @@ module "acs" {
 data "aws_caller_identity" "current" {}
 
 locals {
-  tags = merge(var.tags, {
-    env              = var.env_tag
-    data-sensitivity = var.data_sensitivity_tag
-    repo             = "https://github.com/${var.github_owner}/${var.github_repo}"
+  tags = merge(var.tags, var.required_tags, {
+    repo = "https://github.com/${var.source_github_owner}/${var.source_github_repo}"
   })
 
   deploy_provider  = "CodeDeploy"
-  has_deploy_stage = var.code_deploy_config != null
+  has_deploy_stage = var.deploy_code_deploy_config != null
 
   build_env_vars = merge(var.build_env_variables, {
     AWS_ACCOUNT_ID            = data.aws_caller_identity.current.account_id
-    TERRAFORM_APPLICATION_DIR = var.terraform_application_path
+    TERRAFORM_APPLICATION_DIR = var.deploy_terraform_application_path
     TF_CLI_ARGS               = "-no-color" //TODO: Only in terraform build probably
   })
 }
@@ -106,10 +104,10 @@ resource "aws_codepipeline" "pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner      = var.github_owner
-        Repo       = var.github_repo
-        Branch     = var.github_branch
-        OAuthToken = var.github_token == null ? module.acs.github_token : var.github_token
+        Owner      = var.source_github_owner
+        Repo       = var.source_github_repo
+        Branch     = var.source_github_branch
+        OAuthToken = var.source_github_token == null ? module.acs.github_token : var.source_github_token
         //If this is not set then webhook and polling cause the pipeline to run (running everything twice)
         PollForSourceChanges = false
       }
@@ -163,7 +161,7 @@ resource "aws_codepipeline" "pipeline" {
         provider        = "CodeDeploy"
         version         = "1"
         input_artifacts = ["terraform_output"]
-        configuration   = var.code_deploy_config
+        configuration   = var.deploy_code_deploy_config
       }
     }
   }

@@ -12,14 +12,14 @@ module "buildspec" {
 module "codepipeline" {
   source = ".."
   pipeline_name = "parking-api-dev"
-  github_repo   = "parking-v2"
-  github_branch = "dev"
+  source_github_repo   = "parking-v2"
+  source_github_branch = "dev"
   acs_env = "dev"
   build_buildspec = module.buildspec.script
-  terraform_application_path = "./terraform-dev/application/"
+  deploy_terraform_application_path = "./terraform-dev/application/"
   env_tag              = "dev"
   data_sensitivity_tag = "confidential"
-  code_deploy_config = {
+  deploy_code_deploy_config = {
     ApplicationName     = "parking-api-codedeploy"
     DeploymentGroupName = "parking-api-deployment-group"
   }
