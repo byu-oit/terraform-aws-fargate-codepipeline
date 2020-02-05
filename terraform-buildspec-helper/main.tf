@@ -1,7 +1,7 @@
 locals {
   install_terraform = [
     "wget ${var.terraform_url}${var.terraform_archive_name}",
-    var.terraform_archive_name,
+    "unzip ${var.terraform_archive_name}",
     "mv terraform /bin"
   ]
 
