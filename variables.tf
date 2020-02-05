@@ -77,4 +77,13 @@ variable "tags" {
   default     = {}
 }
 
+variable "terraform_url" {
+  type = string
+  default = "https://releases.hashicorp.com/terraform/0.12.20/"
+}
+
+variable "terraform_archive_name" {
+  type = string
+  default = "terraform_0.12.20_linux_amd64.zip"
+}
 

@@ -231,6 +231,8 @@ resource "aws_codebuild_project" "build_project" {
 module "terraform_buildspec" {
   source         = "./terraform-buildspec-helper"
   export_appspec = true //I don't think it causes a problem to export it everytime
+  terraform_url = var.terraform_url
+  terraform_archive_name = var.terraform_archive_name
 }
 
 resource "aws_codebuild_project" "deploy_build_project" {
