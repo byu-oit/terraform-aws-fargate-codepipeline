@@ -1,7 +1,7 @@
 locals {
   install_terraform = [
-    "wget https://releases.hashicorp.com/terraform/0.12.19/terraform_0.12.19_linux_amd64.zip",
-    "unzip terraform_0.12.19_linux_amd64.zip",
+    "wget ${var.terraform_url}${var.terraform_archive_name}",
+    var.terraform_archive_name,
     "mv terraform /bin"
   ]
 
