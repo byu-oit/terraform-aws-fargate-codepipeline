@@ -271,13 +271,11 @@ resource "aws_codebuild_project" "deploy_build_project" {
   tags = local.tags
 }
 
-//TODO: Constrain
 resource "random_string" "webhook_hmac" {
   length  = 100
   special = false
 }
 
-//TODO: Define in top level?
 resource "aws_codepipeline_webhook" "webhook" {
   name            = "${var.pipeline_name}-webhook"
   authentication  = "GITHUB_HMAC"
