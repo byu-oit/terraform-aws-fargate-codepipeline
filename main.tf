@@ -1,7 +1,9 @@
 terraform {
   required_version = ">= 0.12.16"
   required_providers {
-    aws = ">= 2.42"
+    aws    = ">= 2.42"
+    random = ">= 2.2"
+    github = ">= 2.3"
   }
 }
 
@@ -14,6 +16,7 @@ module "acs" {
 data "aws_caller_identity" "current" {}
 
 locals {
+
   tags = merge(var.tags, var.required_tags, {
     repo = "https://github.com/${var.source_github_owner}/${var.source_github_repo}"
   })
@@ -229,9 +232,9 @@ resource "aws_codebuild_project" "build_project" {
 }
 
 module "terraform_buildspec" {
-  source         = "./terraform-buildspec-helper"
-  export_appspec = true //I don't think it causes a problem to export it everytime
-  terraform_url = var.terraform_url
+  source                 = "./terraform-buildspec-helper"
+  export_appspec         = true //I don't think it causes a problem to export it everytime
+  terraform_url          = var.terraform_url
   terraform_archive_name = var.terraform_archive_name
 }
 
@@ -266,6 +269,43 @@ resource "aws_codebuild_project" "deploy_build_project" {
     buildspec = module.terraform_buildspec.script
   }
   tags = local.tags
+}
+
+//TODO: Constrain
+resource "random_string" "webhook_hmac" {
+  length  = 100
+  special = false
+}
+
+//TODO: Define in top level?
+resource "aws_codepipeline_webhook" "webhook" {
+  name            = "${var.pipeline_name}-webhook"
+  authentication  = "GITHUB_HMAC"
+  target_action   = "Source"
+  target_pipeline = aws_codepipeline.pipeline.name
+
+  authentication_configuration {
+    secret_token = random_string.webhook_hmac.result
+  }
+
+  filter {
+    json_path    = "$.ref"
+    match_equals = "refs/heads/{Branch}"
+  }
+}
+
+# Wire the CodePipeline webhook into a GitHub repository.
+resource "github_repository_webhook" "webhook" {
+  repository = var.source_github_repo
+
+  configuration {
+    url          = aws_codepipeline_webhook.webhook.url
+    content_type = "json"
+    insecure_ssl = false
+    secret       = random_string.webhook_hmac.result
+  }
+
+  events = ["push"]
 }
 
 //TODO: Slack notification?
