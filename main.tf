@@ -7,13 +7,6 @@ terraform {
   }
 }
 
-module "acs" {
-  source = "github.com/byu-oit/terraform-aws-acs-info?ref=v1.2.2"
-  env    = var.acs_env
-  //TODO: Other parameters for acs? Like vpn?
-}
-
-
 data "aws_caller_identity" "current" {}
 
 locals {
@@ -34,7 +27,7 @@ locals {
 
 resource "aws_iam_role" "codepipeline_role" {
   name                 = "${var.pipeline_name}-codepipeline-role"
-  permissions_boundary = var.role_permissions_boundary_arn == null ? module.acs.role_permissions_boundary.arn : var.role_permissions_boundary_arn
+  permissions_boundary = var.role_permissions_boundary_arn
   assume_role_policy   = <<EOF
 {
   "Version": "2012-10-17",
@@ -111,7 +104,7 @@ resource "aws_codepipeline" "pipeline" {
         Owner      = var.source_github_owner
         Repo       = var.source_github_repo
         Branch     = var.source_github_branch
-        OAuthToken = var.source_github_token == null ? module.acs.github_token : var.source_github_token
+        OAuthToken = var.source_github_token
         //If this is not set then webhook and polling cause the pipeline to run (running everything twice)
         PollForSourceChanges = false
       }
@@ -201,7 +194,7 @@ resource "aws_s3_bucket" "codebuild_bucket" {
 
 resource "aws_codebuild_project" "build_project" {
   name         = "${var.pipeline_name}-Build"
-  service_role = var.power_builder_role_arn == null ? module.acs.power_builder_role.arn : var.power_builder_role_arn
+  service_role = var.power_builder_role_arn
   artifacts {
     type = "CODEPIPELINE"
   }
@@ -241,7 +234,7 @@ module "terraform_buildspec" {
 
 resource "aws_codebuild_project" "deploy_build_project" {
   name         = "${var.pipeline_name}-TerraformDeploy"
-  service_role = var.power_builder_role_arn == null ? module.acs.power_builder_role.arn : var.power_builder_role_arn
+  service_role = var.power_builder_role_arn
   artifacts {
     type = "CODEPIPELINE"
   }
