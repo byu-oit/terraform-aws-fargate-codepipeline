@@ -6,7 +6,7 @@ locals {
   ]
 
   run_terraform = [
-    "mv *.tfvars $TERRAFORM_APPLICATION_DIR.",
+    "mv *.tfvars $TERRAFORM_APPLICATION_DIR. || true", // don't fail if there are no .tfvars files
     "cd $TERRAFORM_APPLICATION_DIR",
     "terraform init",
     "terraform apply -auto-approve -input=false",
