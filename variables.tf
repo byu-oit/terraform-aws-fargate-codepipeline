@@ -23,6 +23,7 @@ variable "power_builder_role_arn" {
 //Source
 variable "source_github_owner" {
   type    = string
+  description = "The GitHub owner of the GitHub repo (the GitHub org or individual)."
   default = "byu-oit"
 }
 
@@ -52,7 +53,7 @@ variable "build_buildspec" {
 
 variable "build_env_variables" {
   type        = map(string)
-  description = "environment variables for Build"
+  description = "Environment variables for Build"
   default     = {}
 }
 
@@ -73,17 +74,19 @@ variable "required_tags" {
 
 variable "tags" {
   type        = map(string)
-  description = "Tags for code pipeline"
+  description = "Extra tags to attach to the pipeline"
   default     = {}
 }
 
 variable "terraform_url" {
   type = string
+  description = "URL to download terraform executable from"
   default = "https://releases.hashicorp.com/terraform/0.12.20/"
 }
 
 variable "terraform_archive_name" {
   type = string
+  description = "Zipfile archive name to download Terraform"
   default = "terraform_0.12.20_linux_amd64.zip"
 }
 
