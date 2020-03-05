@@ -3,11 +3,6 @@ variable "pipeline_name" {
   description = "Unique name for pipeline. No spaces."
 }
 
-variable "acs_env" {
-  type        = string
-  description = "Environment of the AWS Account (e.g. dev, prd)"
-}
-
 variable "role_permissions_boundary_arn" {
   type        = string
   description = "The role permissions boundary ARN."
@@ -24,7 +19,6 @@ variable "power_builder_role_arn" {
 variable "source_github_owner" {
   type    = string
   description = "The GitHub owner of the GitHub repo (the GitHub org or individual)."
-  default = "byu-oit"
 }
 
 variable "source_github_repo" {

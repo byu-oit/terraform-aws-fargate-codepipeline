@@ -12,6 +12,7 @@ module "buildspec" {
 module "codepipeline" {
   source = ".."
   pipeline_name = "parking-api-dev"
+  source_github_owner = "byu-oit"
   source_github_repo   = "parking-v2"
   source_github_branch = "dev"
   acs_env = "dev"

@@ -13,9 +13,25 @@ Creates a CodePipeline specifically for a fargate project. The pipeline it creat
 ```hcl
 module "codepipeline" {
   source = "git@github.com:byu-oit/terraform-aws-fargate-codepipeline?ref=v0.0.8"
-  
+  pipeline_name = "example"
   role_permissions_boundary_arn = module.acs.role_permissions_boundary.arn
   power_builder_role_arn        = module.acs.power_builder_role.arn
+
+  source_github_owner = "byu-oit"
+  source_github_repo = "my-example-repo"
+  source_github_branch = "master"
+  source_github_token = module.acs.github_token
+
+  deploy_terraform_application_path = "./terraform-iac/prd/pipeline/"
+  deploy_code_deploy_config = {
+    ApplicationName = "my-codedeploy-app"
+    DeploymentGroupName = "my-codedeploy-group"
+  }
+
+  required_tags = {
+    env = "prd"
+    data-sensitivity = "confidential"
+  }
 }
 ```
 
@@ -26,10 +42,9 @@ module "codepipeline" {
 | Name | Type |Description | Default |
 | --- | --- | --- | --- |
 | pipeline_name | string | Unique name for the pipeline. No spaces. | |
-| acs_env | string | Environment of the AWS Account (e.g. dev, prd) | |
 | role_permissions_boundary_arn | string | The role permissions boundary ARN. | |
 | power_builder_role_arn | string | The ARN for the PowerBuilder role. | |
-| source_github_owner | string | The GitHub owner of the GitHub repo (the GitHub org or individual) | byu-oit |
+| source_github_owner | string | The GitHub owner of the GitHub repo (the GitHub org or individual) | |
 | source_github_repo | string | The name of the repository of the project. | |
 | source_github_branch | string | The name of the branch you want to trigger the pipeline. | |
 | source_github_token | string | The GitHub token to pull from the GitHub repo. | null |
