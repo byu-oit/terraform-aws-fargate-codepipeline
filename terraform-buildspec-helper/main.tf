@@ -1,8 +1,7 @@
 locals {
   install_terraform = [
     "wget ${var.terraform_url}${var.terraform_archive_name}",
-    "unzip ${var.terraform_archive_name}",
-    "mv terraform /bin"
+    "unzip ${var.terraform_archive_name} -d /bin"
   ]
 
   run_terraform = [
@@ -14,10 +13,7 @@ locals {
   ]
 
   extract_appspec = [
-    "cd $TERRAFORM_APPLICATION_DIR",
-    "terraform output appspec > appspec.json 2>/dev/null",
-    "mv appspec.json $CODEBUILD_SRC_DIR/.",
-    "cd $CODEBUILD_SRC_DIR"
+    "mv $TERRAFORM_APPLICATION_DIR/appspec.json $CODEBUILD_SRC_DIR/."
   ]
 
   appspec_artifacts = [
