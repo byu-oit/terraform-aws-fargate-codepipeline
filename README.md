@@ -12,7 +12,7 @@ Creates a CodePipeline specifically for a fargate project. The pipeline it creat
 ## Usage
 ```hcl
 module "codepipeline" {
-  source = "git@github.com:byu-oit/terraform-aws-fargate-codepipeline?ref=v0.0.8"
+  source = "git@github.com:byu-oit/terraform-aws-fargate-codepipeline?ref=v0.1.0"
   pipeline_name = "example"
   role_permissions_boundary_arn = module.acs.role_permissions_boundary.arn
   power_builder_role_arn        = module.acs.power_builder_role.arn
