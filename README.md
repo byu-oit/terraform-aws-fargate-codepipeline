@@ -12,31 +12,34 @@ Creates a CodePipeline specifically for a fargate project. The pipeline it creat
 ## Usage
 ```hcl
 module "codepipeline" {
-  source = "git@github.com:byu-oit/terraform-aws-fargate-codepipeline?ref=v0.1.0"
-  pipeline_name = "example"
+  source                        = "git@github.com:byu-oit/terraform-aws-fargate-codepipeline?ref=v0.1.0"
+  pipeline_name                 = "example-pipeline"
   role_permissions_boundary_arn = module.acs.role_permissions_boundary.arn
   power_builder_role_arn        = module.acs.power_builder_role.arn
+  source_github_owner           = "byu-oit"
+  source_github_repo            = "example"
+  source_github_branch          = "dev"
+  source_github_token           = module.acs.github_token
+  build_buildspec               = module.buildspec.script
 
-  source_github_owner = "byu-oit"
-  source_github_repo = "my-example-repo"
-  source_github_branch = "master"
-  source_github_token = module.acs.github_token
-
-  deploy_terraform_application_path = "./terraform-iac/prd/pipeline/"
+  deploy_terraform_application_path = "./terraform-dev/application/"
   deploy_code_deploy_config = {
-    ApplicationName = "my-codedeploy-app"
-    DeploymentGroupName = "my-codedeploy-group"
+    ApplicationName     = "example-codedeploy"
+    DeploymentGroupName = "example-deployment-group"
   }
 
   required_tags = {
-    env = "prd"
-    data-sensitivity = "confidential"
+    dev              = "dev"
+    data-sensitivity = "internal"
   }
 }
 ```
 
 ## Requirements
 * Terraform version 0.12.16 or greater
+* AWS provider version 2.42 or greater
+* GitHub provider version 2.3 or greater
+* Random provider version 2.2 or greater
 
 ## Inputs
 | Name | Type |Description | Default |

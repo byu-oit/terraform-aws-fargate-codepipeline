@@ -183,7 +183,8 @@ resource "aws_s3_bucket" "codebuild_bucket" {
     }
   }
 
-  tags = local.tags
+  force_destroy = true
+  tags          = local.tags
 
   lifecycle {
     ignore_changes = [

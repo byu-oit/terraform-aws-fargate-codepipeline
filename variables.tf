@@ -75,12 +75,12 @@ variable "tags" {
 variable "terraform_url" {
   type = string
   description = "URL to download terraform executable from"
-  default = "https://releases.hashicorp.com/terraform/0.12.23/"
+  default = "https://releases.hashicorp.com/terraform/0.12.24/"
 }
 
 variable "terraform_archive_name" {
   type = string
   description = "Zipfile archive name to download Terraform"
-  default = "terraform_0.12.23_linux_amd64.zip"
+  default = "terraform_0.12.24_linux_amd64.zip"
 }
 
