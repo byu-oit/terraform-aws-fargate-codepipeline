@@ -29,7 +29,7 @@ module "codepipeline" {
   }
 
   required_tags = {
-    dev              = "dev"
+    env              = "dev"
     data-sensitivity = "internal"
   }
 }
